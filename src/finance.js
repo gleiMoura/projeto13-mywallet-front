@@ -1,12 +1,22 @@
 import styled from 'styled-components';
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { ThreeDots } from 'react-loader-spinner';
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
+import dataContext from "./dataContext";
+
 
 
 export default function Finance() {
     const navigate = useNavigate();
+
+    const { data } = useContext(dataContext);
+
+    const config = {
+        headers: {
+            Authorization: `Bearer ${data.token}`
+        }
+    };
 
     //Entry states
     const [entryValue, setEntryValue] = useState('');
@@ -34,9 +44,14 @@ export default function Finance() {
                         <h1>Olá, Fulano</h1>
                         <ion-icon name="log-out-outline"></ion-icon>
                     </header>
-                    <div className='finance'>
+                    
+                    <div className={financeInformation.length === 0 ? "finance" : "hide"}>
                         <p>Não há registros de entradas ou saídas</p>
                     </div>
+                    <div className={financeInformation.length !== 0 ? "full-finance" : "hide"}>
+                        
+                    </div>
+
                     <footer>
                         <div className='square' onClick={(e) => {
                             setEntryBoolean(false);
@@ -69,11 +84,11 @@ export default function Finance() {
                                 if (window.confirm('Você quer sair?')) { setEntryBoolean(true) }
                             } else {
                                 setLoadButton(false)
-                                const requestion = axios.post("https://localhost:27017/data", {
+                                const requestion = axios.post("https://localhost:5000/myFinance", {
                                     type: "entry",
                                     value: entryValue,
                                     description: entryDescription
-                                });
+                                }, config);
                                 requestion.then(answer => {
                                     setFinanceInformation([...financeInformation, answer.data]);
                                     setEntryBoolean(true)
@@ -119,7 +134,7 @@ export default function Finance() {
                                     type: "exit",
                                     value: exitValue,
                                     description: exitDescription
-                                });
+                                }, config);
                                 requestion.then(answer => {
                                     setFinanceInformation([...financeInformation, answer.data]);
                                     setExitBoolean(true)

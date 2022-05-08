@@ -1,23 +1,68 @@
 import Logo from "./assets/logo.png";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useState } from "react";
 import styled from 'styled-components';
+import { ThreeDots } from 'react-loader-spinner';
+import axios from 'axios';
+
+
 
 export default function Register() {
+    const navigate = useNavigate();
+
     function SendData() {
+        // inputs states
         const [name, setName] = useState("");
         const [email, setEmail] = useState("");
         const [password, setPassword] = useState("");
         const [secondPassword, setSecondPassword] = useState("");
+
+        //State to show the button loading
+        const [loadbutton, setLoadButton] = useState(true);
 
         return (
             <>
                 <input type="text" id="name" placeholder='nome' required onChange={(e) => setName(e.target.value)} />
                 <input type="email" id='email' placeholder='email' required onChange={(e) => setEmail(e.target.value)} />
                 <input type="password" id="password" placeholder='senha (6 dígitos)' required onChange={(e) => setPassword(e.target.value)} />
-                <input type="password" id="password" placeholder='senha (6 dígitos)' required onChange={(e) => setSecondPassword(e.target.value)} />
+                <input type="password" id="secondPassword" placeholder='senha (6 dígitos)' required onChange={(e) => setSecondPassword(e.target.value)} />
 
-                <button>Cadastrar</button>
+                <button className={loadbutton ? "" : "hide"} onClick={() => {
+                    if (!name || !email || !password || !secondPassword) {
+                        alert("Preecha todos os campos!");
+                        navigate("/register")
+                    } else if (password !== secondPassword) {
+                        alert("As duas senhas devem ser iguais!");
+                        navigate("/register")
+                    } else {
+                        setLoadButton(false)
+                        const requestion = axios.post("http://localhost:5000/signUp", {
+                            name: name,
+                            email: email,
+                            password: password
+                        });
+                        requestion.then(answer => {
+                            console.log(answer.data);
+                            alert("Usuário criado com sucesso!")
+                            navigate("/");
+                        })
+                        requestion.catch(err => {
+                            alert("dados inválidos!", err.data);
+                            console.error(err.data);
+                            setLoadButton(true);
+                            navigate("/register");
+                        })
+                    }
+                }}>Cadastrar</button>
+
+                <button className={loadbutton ? "hide" : "loading"}>
+                    <ThreeDots
+                        height="80"
+                        width="80"
+                        color='white'
+                        ariaLabel='loading'
+                    />
+                </button>
 
                 <p>
                     <Link to="/">
@@ -46,6 +91,9 @@ display: flex;
 flex-direction: column;
 align-items: center;
 background-color: rgb(140, 17, 190);
+    .hide{
+        display: none;
+    }
     header{
         margin-top: 95px;
         margin-bottom: 24px;
@@ -94,5 +142,12 @@ background-color: rgb(140, 17, 190);
     a{
         text-decoration: none;
         color: white;
+    }
+    .loading{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #A328D6;
+        border: 1px solid rgb(140, 17, 190);
     }
 `

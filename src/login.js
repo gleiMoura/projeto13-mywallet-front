@@ -2,14 +2,11 @@ import Logo from "./assets/logo.png";
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from "react";
 import styled from 'styled-components';
-import { ThreeDots } from 'react-loader-spinner';
 import axios from 'axios';
+import { ThreeDots } from 'react-loader-spinner';
 
-export default function Login() {
+export default function Login({setData}) {
     const navigate = useNavigate();
-
-    //data form requestion to server
-    const [data, setData] = useState([]);
 
     //Inputs states
     const [email, setEmail] = useState('');
@@ -35,7 +32,7 @@ export default function Login() {
                         navigate("/");
                     } else {
                         setLoadButton(false)
-                        const requestion = axios.post("https://localhost:27017/login", {
+                        const requestion = axios.post("http://localhost:5000/signIn", {
                             email: email,
                             password: password
                         });
