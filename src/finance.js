@@ -64,7 +64,18 @@ export default function Finance() {
                 <main className={!entryBoolean || !exitBoolean ? "hide" : "main"}>
                     <header>
                         <h1>Olá, Fulano</h1>
-                        <ion-icon name="log-out-outline"></ion-icon>
+                        <ion-icon name="log-out-outline" onClick={(e) => {
+                            if (window.confirm('Você quer sair do aplicativo?')) {
+                                const requestion = axios.post("http://localhost:5000/logout","", config);
+                                requestion.then(answer => {
+                                    navigate("/")
+                                    console.log(answer.data);
+                                })
+                                requestion.catch(err => {
+                                    alert("logout falhou!", err)
+                                });
+                            };
+                        }}></ion-icon>
                     </header>
 
                     <div className={financeInformation.length === 0 ? "finance" : "hide"}>
