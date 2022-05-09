@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { ThreeDots } from 'react-loader-spinner';
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
@@ -12,9 +12,11 @@ export default function Finance() {
 
     const { data } = useContext(dataContext);
 
+    const token = data.token;
+
     const config = {
         headers: {
-            Authorization: `Bearer ${data.token}`
+            Authorization: `Bearer ${token}`
         }
     };
 
@@ -36,6 +38,26 @@ export default function Finance() {
     //State to get all finance information
     const [financeInformation, setFinanceInformation] = useState([]);
 
+    // variable to get the result of finance sum
+    let total = 0;
+    financeInformation.forEach(element => {
+        if (element.type === "entry") {
+            total = total + parseInt(element.value);
+        } else if (element.type === "exit") {
+            total = total - parseInt(element.value);
+        }
+    });
+
+    useEffect(() => {
+        const requestion = axios.get("http://localhost:5000/myFinance", config);
+        requestion.then(answer => {
+            setFinanceInformation(answer.data);
+        })
+        requestion.catch(err => {
+            console.error(err.data)
+        })
+    }, []);
+
     return (
         <>
             <FinanceStyle>
@@ -44,12 +66,24 @@ export default function Finance() {
                         <h1>Olá, Fulano</h1>
                         <ion-icon name="log-out-outline"></ion-icon>
                     </header>
-                    
+
                     <div className={financeInformation.length === 0 ? "finance" : "hide"}>
                         <p>Não há registros de entradas ou saídas</p>
                     </div>
-                    <div className={financeInformation.length !== 0 ? "full-finance" : "hide"}>
-                        
+                    <div className={financeInformation.length >= 1 ? "full-finance" : "hide"}>
+                        {financeInformation.map(element => {
+                            return (
+                                <div className='finance-element'>
+                                    <p><span>{element.date}</span> {element.description}</p>
+                                    <p className={element.type === "entry" ? "entry" : "exit"}>{element.value}</p>
+                                </div>
+                            )
+                        })}
+
+                        <div className='total-element'>
+                            <p className='balance'>Saldo</p>
+                            <p className={total < 0 ? "exit" : "entry"}>{total}</p>
+                        </div>
                     </div>
 
                     <footer>
@@ -63,7 +97,7 @@ export default function Finance() {
                             setExitBoolean(false);
                         }}>
                             <ion-icon name="remove-circle-outline"></ion-icon>
-                            <h2>Novas Entradas</h2>
+                            <h2>Novas Saídas</h2>
                         </div>
                     </footer>
                 </main>
@@ -73,7 +107,7 @@ export default function Finance() {
                         <h1>Nova Entrada</h1>
                     </header>
                     <form>
-                        <input type="number" id='entry-number' placeholder='Valor' required onChange={(e) => {
+                        <input type="text" id='entry-number' placeholder='Valor' required onChange={(e) => {
                             setEntryValue(e.target.value);
                         }} />
                         <input type="text" id="entry-description" placeholder='Descrição' required onChange={(e) => setEntryDescription(e.target.value)} />
@@ -84,20 +118,22 @@ export default function Finance() {
                                 if (window.confirm('Você quer sair?')) { setEntryBoolean(true) }
                             } else {
                                 setLoadButton(false)
-                                const requestion = axios.post("https://localhost:5000/myFinance", {
+                                const requestion = axios.post("http://localhost:5000/myFinance", {
                                     type: "entry",
                                     value: entryValue,
                                     description: entryDescription
                                 }, config);
                                 requestion.then(answer => {
                                     setFinanceInformation([...financeInformation, answer.data]);
-                                    setEntryBoolean(true)
+                                    setEntryBoolean(true);
+                                    setLoadButton(true);
                                 })
                                 requestion.catch(err => {
                                     alert("dados inválidos!", err.data);
                                     setLoadButton(true);
-                                    setEntryBoolean(true)
-                                })
+                                    setEntryBoolean(true);
+                                });
+                                e.preventDefault();
                             }
 
                         }}>Salvar Entrada</button>
@@ -130,20 +166,22 @@ export default function Finance() {
                                 if (window.confirm('Você quer sair?')) { setExitBoolean(true) };
                             } else {
                                 setLoadButton(false)
-                                const requestion = axios.post("https://localhost:27017/data", {
+                                const requestion = axios.post("http://localhost:5000/myFinance", {
                                     type: "exit",
                                     value: exitValue,
                                     description: exitDescription
                                 }, config);
                                 requestion.then(answer => {
                                     setFinanceInformation([...financeInformation, answer.data]);
-                                    setExitBoolean(true)
+                                    setExitBoolean(true);
+                                    setLoadButton(true);
                                 })
                                 requestion.catch(err => {
                                     alert("dados inválidos!", err.data);
                                     setLoadButton(true);
                                     setExitBoolean(true)
-                                })
+                                });
+                                e.preventDefault();
                             }
                         }}>Salvar Entrada</button>
                     </form>
@@ -156,14 +194,14 @@ export default function Finance() {
                             ariaLabel='loading'
                         />
                     </button>
-            </div>
-        </FinanceStyle>
+                </div>
+            </FinanceStyle>
         </>
     )
 }
 
 const FinanceStyle = styled.div`
-height: 100vh;
+height: 105vh;
 display: flex;
 flex-direction: column;
 align-items: center;
@@ -210,6 +248,49 @@ background-color: rgb(140, 17, 190);
         font-weight: 400;
         font-family: 'Raleway';
         color: #868686;
+    }
+    .finance-element{
+        display: flex;
+        justify-content: space-between;
+    }
+    .total-element{
+        display: flex;
+        justify-content: space-between;
+        position: absolute;
+        bottom: 5px;
+        left: 10px;
+        right: 10px;
+    }
+    .balance{
+        font-family: 'Raleway';
+        font-size: 18px;
+        color: #000;
+        font-weight: 700;
+    }
+    .full-finance{
+        width: 326px;
+        height: 446px;
+        background-color: white;
+        border-radius: 5px;
+        padding: 23px 12px;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+    }
+    .full-finance span{
+        font-family: 'Raleway';
+        font-size: 16px;
+        color: #C6C6C6;
+    }
+    .entry{
+        font-family: 'Raleway';
+        font-size: 16px;
+        color: #03AC00;
+    }
+    .exit{
+        font-family: 'Raleway';
+        font-size: 16px;
+        color: #C70000;
     }
     footer{
         width: 326px;
