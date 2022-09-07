@@ -36,7 +36,7 @@ export default function Register() {
                         navigate("/register")
                     } else {
                         setLoadButton(false)
-                        const requestion = axios.post("http://localhost:5000/signUp", {
+                        const requestion = axios.post("https://mywallet.onrender.com/signUp", {
                             name: name,
                             email: email,
                             password: password

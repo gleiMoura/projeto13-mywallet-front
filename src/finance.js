@@ -49,7 +49,7 @@ export default function Finance() {
     });
 
     useEffect(() => {
-        const requestion = axios.get("http://localhost:5000/myFinance", config);
+        const requestion = axios.get("https://mywallet.onrender.com/myFinance", config);
         requestion.then(answer => {
             setFinanceInformation(answer.data);
         })
@@ -63,10 +63,10 @@ export default function Finance() {
             <FinanceStyle>
                 <main className={!entryBoolean || !exitBoolean ? "hide" : "main"}>
                     <header>
-                        <h1>Olá, Fulano</h1>
-                        <ion-icon name="log-out-outline" onClick={(e) => {
+                        <h1>Olá, {data.name}</h1>
+                        <ion-icon className='logout' name="log-out-outline" onClick={(e) => {
                             if (window.confirm('Você quer sair do aplicativo?')) {
-                                const requestion = axios.post("http://localhost:5000/logout","", config);
+                                const requestion = axios.post("https://mywallet.onrender.com/logout","", config);
                                 requestion.then(answer => {
                                     navigate("/")
                                     console.log(answer.data);
@@ -129,7 +129,7 @@ export default function Finance() {
                                 if (window.confirm('Você quer sair?')) { setEntryBoolean(true) }
                             } else {
                                 setLoadButton(false)
-                                const requestion = axios.post("http://localhost:5000/myFinance", {
+                                const requestion = axios.post("https://mywallet.onrender.com/myFinance", {
                                     type: "entry",
                                     value: entryValue,
                                     description: entryDescription
@@ -177,7 +177,7 @@ export default function Finance() {
                                 if (window.confirm('Você quer sair?')) { setExitBoolean(true) };
                             } else {
                                 setLoadButton(false)
-                                const requestion = axios.post("http://localhost:5000/myFinance", {
+                                const requestion = axios.post("https://mywallet.onrender.com/myFinance", {
                                     type: "exit",
                                     value: exitValue,
                                     description: exitDescription
@@ -194,7 +194,7 @@ export default function Finance() {
                                 });
                                 e.preventDefault();
                             }
-                        }}>Salvar Entrada</button>
+                        }}>Salvar Saída</button>
                     </form>
 
                     <button className={loadbutton ? "hide" : "loading"}>
@@ -212,23 +212,23 @@ export default function Finance() {
 }
 
 const FinanceStyle = styled.div`
-height: 105vh;
+height: 120vh;
 display: flex;
 flex-direction: column;
 align-items: center;
+padding-left: 33px;
 background-color: rgb(140, 17, 190);
     .hide{
         display: none;
     }
     header{ 
         width: 360px;
-        margin-top: 25px;
-        margin-bottom: 22px;
-        padding-left: 20px;
-        padding-right: 10px;
+				margin: 25px 0 22px 0;
+				padding-right: 33px;
         display: flex;
         justify-content: space-between;
         align-items: center;
+				position: relative;
     }
     ion-icon{
         font-size: 26px;
@@ -297,11 +297,13 @@ background-color: rgb(140, 17, 190);
         font-family: 'Raleway';
         font-size: 16px;
         color: #03AC00;
+				padding-right: 33px;
     }
     .exit{
         font-family: 'Raleway';
         font-size: 16px;
         color: #C70000;
+				padding-right: 33px;
     }
     footer{
         width: 326px;
