@@ -27,7 +27,7 @@ export default function Register() {
                 <input type="password" id="password" placeholder='senha (6 dígitos)' required onChange={(e) => setPassword(e.target.value)} />
                 <input type="password" id="secondPassword" placeholder='senha (6 dígitos)' required onChange={(e) => setSecondPassword(e.target.value)} />
 
-                <button className={loadbutton ? "" : "hide"} onClick={() => {
+                <button className={loadbutton ? "" : "hide"} onClick={(e) => {
                     if (!name || !email || !password || !secondPassword) {
                         alert("Preecha todos os campos!");
                         navigate("/register")
@@ -51,7 +51,8 @@ export default function Register() {
                             console.error(err.data);
                             setLoadButton(true);
                             navigate("/register");
-                        })
+                        });
+												e.preventDefault();
                     }
                 }}>Cadastrar</button>
 
