@@ -2,6 +2,8 @@ import walletFactory from "../../factories/walletFactory";
 
 const client = walletFactory.clientRegister;
 
+const { entry } = walletFactory;
+
 const user = {
 	email: client.email,
 	password: client.password
@@ -28,10 +30,10 @@ describe("Click in register button", () => {
 		})
 	});
 
-	it.only('Do register', async () => {
+	it('Do register', async () => {
 		cy.register(userRegister);
 		cy.intercept('POST', 'https://mywallet.onrender.com/register').as('register')
-		cy.wait(2000)
+		cy.wait(3000)
 
 		cy.on('window:alert', (e) => {
 			expect(e).to.contains('Usuário criado com sucesso!')
@@ -40,10 +42,38 @@ describe("Click in register button", () => {
 
 	it('Do login', async () => {
 		cy.register(userRegister);
-		cy.wait(2000);
+		cy.wait(3000);
 		cy.login(user);
 
 		cy.url()
       .should('be.equal', 'http://localhost:3000/finance')
 	});
+
+	it.only('Add an entry', async () => {
+		cy.register(userRegister);
+		cy.wait(3000);
+		cy.login(user);
+
+		cy.get('footer > :nth-child(1)').click();
+		cy.get('#entry-number').type(entry.entryValue);
+		cy.get('#entry-description').type(entry.description);
+		cy.get('div.entry > form > :nth-child(3)').click();
+
+		cy.contains(entry.entryValue).should('be.visible');
+		cy.contains(entry.description).should('be.visible');
+	});
+
+	it.only('withdraw a value', async () => {
+		cy.register(userRegister);
+		cy.wait(3000);
+		cy.login(user);
+
+		cy.get('footer > :nth-child(2)').click();
+		cy.get('#number').type(entry.entryValue);
+		cy.get('#description').type(entry.description);
+		cy.get('.exit > form > button').click();
+
+		cy.contains(entry.entryValue).should('be.visible');
+		cy.contains(entry.description).should('be.visible');
+	})
 })

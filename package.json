@@ -17,6 +17,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "npx cypress open",
+		"dev:test": "npx cypress run",
 		"test:moch": "npx cypress run --reporter mochawesome",
     "eject": "react-scripts eject"
   },

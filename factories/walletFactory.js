@@ -2,11 +2,12 @@ import { faker } from "@faker-js/faker";
 
 const name = faker.name.firstName();
 const password = faker.internet.password();
+const entryValue = faker.commerce.price();
+const description = faker.animal.bird();
 
 const clientLogin = {
 	name, password
 };
-
 
 const clientRegister = {
 	name: name,
@@ -15,9 +16,14 @@ const clientRegister = {
 	password: password
 }
 
+const entry = {
+	entryValue, description
+}
+
 const walletFactory = {
 	clientLogin, 
-	clientRegister
+	clientRegister,
+	entry
 }
 
 export default walletFactory;
