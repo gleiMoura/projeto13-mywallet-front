@@ -1,4 +1,5 @@
 import walletFactory from "../../factories/walletFactory";
+import users from "../../factories/usersFactory";
 
 const client = walletFactory.clientRegister;
 
@@ -30,24 +31,31 @@ describe("Click in register button", () => {
 		})
 	});
 
-	it('Do register', async () => {
-		cy.register(userRegister);
-		cy.intercept('POST', 'https://mywallet.onrender.com/register').as('register')
-		cy.wait(3000)
+	users.forEach(user => {
+		it.only(`Register user ${user.name}`, async () => {
+			cy.register(user);
+			cy.intercept('POST', 'https://mywallet.onrender.com/register').as('register')
+			cy.wait(3000)
+	
+			cy.on('window:alert', (e) => {
+				expect(e).to.contains('Usuário criado com sucesso!')
+			})
+		});
+	})
 
-		cy.on('window:alert', (e) => {
-			expect(e).to.contains('Usuário criado com sucesso!')
-		})
-	});
-
-	it('Do login', async () => {
-		cy.register(userRegister);
-		cy.wait(3000);
-		cy.login(user);
-
-		cy.url()
-      .should('be.equal', 'http://localhost:3000/finance')
-	});
+	users.forEach(user => {
+		it.only(`Login user ${user.name}`, async () => {
+			cy.register({
+				name: user.name,
+				password: user.password
+			});
+			cy.wait(3000);
+			cy.login(user);
+	
+			cy.url()
+				.should('be.equal', 'http://localhost:3000/finance')
+		});
+	})
 
 	it('Add an entry', async () => {
 		cy.register(userRegister);
@@ -77,7 +85,7 @@ describe("Click in register button", () => {
 		cy.contains(entry.description).should('be.visible');
 	});
 
-	it.only('Do logout', async () => {
+	it('Do logout', async () => {
 		cy.register(userRegister);
 		cy.wait(3000);
 		cy.login(user);

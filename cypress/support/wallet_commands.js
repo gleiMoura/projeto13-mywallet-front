@@ -12,3 +12,7 @@ Cypress.Commands.add("login", (user) => {
 	cy.get('#password').type(`${user.password}`)
 	cy.get('form > :nth-child(3)').click()
 })
+
+Cypress.Commands.add("loginAndRegister", (user) => {
+	
+})
