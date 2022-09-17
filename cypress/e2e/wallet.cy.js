@@ -49,7 +49,7 @@ describe("Click in register button", () => {
       .should('be.equal', 'http://localhost:3000/finance')
 	});
 
-	it.only('Add an entry', async () => {
+	it('Add an entry', async () => {
 		cy.register(userRegister);
 		cy.wait(3000);
 		cy.login(user);
@@ -63,7 +63,7 @@ describe("Click in register button", () => {
 		cy.contains(entry.description).should('be.visible');
 	});
 
-	it.only('withdraw a value', async () => {
+	it('withdraw a value', async () => {
 		cy.register(userRegister);
 		cy.wait(3000);
 		cy.login(user);
@@ -75,5 +75,16 @@ describe("Click in register button", () => {
 
 		cy.contains(entry.entryValue).should('be.visible');
 		cy.contains(entry.description).should('be.visible');
+	});
+
+	it.only('Do logout', async () => {
+		cy.register(userRegister);
+		cy.wait(3000);
+		cy.login(user);
+
+		cy.get('header > .md').click();
+
+		cy.url()
+			.should('be.equal', 'http://localhost:3000/')
 	})
 })
