@@ -1,5 +1,4 @@
 import walletFactory from "../../factories/walletFactory";
-import users from "../../factories/usersFactory";
 
 const client = walletFactory.clientRegister;
 
@@ -18,44 +17,10 @@ const userRegister = {
 };
 
 beforeEach(() => {
-	cy.visit('http://localhost:3000')
+	cy.visit(walletFactory.front_url);
 })
 
-describe("Click in register button", () => {
-	it('Click on register button', async () => {
-		cy.contains('a', 'Não tem uma conta? Cadastre-se').click()
-		cy.get('form > :nth-child(5)').click()
-
-		cy.on('window:alert', (e) => {
-			expect(e).to.contains('Preecha todos os campos!')
-		})
-	});
-
-	users.forEach(user => {
-		it.only(`Register user ${user.name}`, async () => {
-			cy.register(user);
-			cy.intercept('POST', 'https://mywallet.onrender.com/register').as('register')
-			cy.wait(3000)
-	
-			cy.on('window:alert', (e) => {
-				expect(e).to.contains('Usuário criado com sucesso!')
-			})
-		});
-	})
-
-	users.forEach(user => {
-		it.only(`Login user ${user.name}`, async () => {
-			cy.register({
-				name: user.name,
-				password: user.password
-			});
-			cy.wait(3000);
-			cy.login(user);
-	
-			cy.url()
-				.should('be.equal', 'http://localhost:3000/finance')
-		});
-	})
+describe("Finance tests", () => {
 
 	it('Add an entry', async () => {
 		cy.register(userRegister);
@@ -93,6 +58,6 @@ describe("Click in register button", () => {
 		cy.get('header > .md').click();
 
 		cy.url()
-			.should('be.equal', 'http://localhost:3000/')
+			.should('be.equal', `${walletFactory.front_url}/`);
 	})
 })

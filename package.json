@@ -17,8 +17,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "npx cypress open",
-		"dev:test": "npx cypress run",
-		"test:moch": "npx cypress run --reporter mochawesome",
+    "dev:test": "npx cypress run",
+    "test:moch": "npx cypress run --reporter mochawesome",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -42,6 +42,7 @@
     "@faker-js/faker": "^7.5.0",
     "cypress": "^10.7.0",
     "dotenv": "^16.0.2",
-    "mochawesome": "^7.1.3"
+    "mochawesome": "^7.1.3",
+    "vendors": "^2.0.1"
   }
 }
