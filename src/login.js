@@ -38,6 +38,7 @@ export default function Login({setData}) {
                         });
                         requestion.then(answer => {
                             setData(answer.data);
+														localStorage.setItem("data", JSON.stringify(answer.data)); 
                             navigate("/finance")
                         })
                         requestion.catch(err => {

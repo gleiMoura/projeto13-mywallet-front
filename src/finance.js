@@ -10,7 +10,11 @@ import dataContext from "./dataContext";
 export default function Finance() {
     const navigate = useNavigate();
 
-    const { data } = useContext(dataContext);
+    let { data } = useContext(dataContext);
+
+		if(data.length === 0) {
+			data = JSON.parse(localStorage.getItem("data"));
+		}
 
     const token = data.token;
 
@@ -68,6 +72,7 @@ export default function Finance() {
                             if (window.confirm('Você quer sair do aplicativo?')) {
                                 const requestion = axios.post("https://mywallet.onrender.com/logout","", config);
                                 requestion.then(answer => {
+																		localStorage.clear() 
                                     navigate("/")
                                     console.log(answer.data);
                                 })
