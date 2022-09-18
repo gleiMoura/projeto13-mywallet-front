@@ -212,11 +212,12 @@ export default function Finance() {
 }
 
 const FinanceStyle = styled.div`
-height: 120vh;
+height: 100vh;
 display: flex;
 flex-direction: column;
 align-items: center;
-padding-left: 33px;
+padding-left: 15px;
+padding-right: 15px;
 background-color: rgb(140, 17, 190);
     .hide{
         display: none;
@@ -245,7 +246,7 @@ background-color: rgb(140, 17, 190);
     }
     .finance{
         width: 326px;
-        height: 446px;
+        height: 390px;
         background-color: white;
         border-radius: 5px;
         display: flex;
