@@ -3,7 +3,7 @@ import walletFactory from "../../factories/walletFactory"
 
 
 beforeEach(() => {
-	cy.visit(walletFactory.front_url)
+	cy.visit('/')
 })
 
 describe("Register tests", () => {
@@ -19,7 +19,7 @@ describe("Register tests", () => {
 	users.forEach(user => {
 		it.only(`Register user ${user.name}`, async () => {
 			cy.register(user);
-			cy.intercept('POST', 'https://mywallet.onrender.com/register').as('register')
+			cy.intercept('POST', 'https://mywallet.onrender.com/register')
 			cy.wait(3000)
 	
 			cy.on('window:alert', (e) => {

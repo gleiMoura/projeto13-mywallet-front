@@ -17,7 +17,7 @@ const userRegister = {
 };
 
 beforeEach(() => {
-	cy.visit(walletFactory.front_url);
+	cy.visit('/');
 })
 
 describe("Finance tests", () => {
@@ -58,6 +58,6 @@ describe("Finance tests", () => {
 		cy.get('header > .md').click();
 
 		cy.url()
-			.should('be.equal', `${walletFactory.front_url}/`);
+			.should('be.equal', `/`);
 	})
 })

@@ -2,7 +2,7 @@ import walletFactory from "../../factories/walletFactory";
 import users from "../../factories/usersFactory";
 
 beforeEach(() => {
-	cy.visit(walletFactory.front_url);
+	cy.visit("/");
 })
 
 describe("Login Test", () => {
@@ -21,7 +21,7 @@ describe("Login Test", () => {
 			});
 	
 			cy.url()
-				.should('be.equal', `${walletFactory.front_url}/finance`)
+				.should('be.equal', `/finance`)
 		});
 	})
 });
