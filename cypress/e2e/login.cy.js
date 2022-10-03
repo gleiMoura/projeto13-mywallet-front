@@ -1,3 +1,5 @@
+/// <reference types="cypress" />
+
 import walletFactory from "../../factories/walletFactory";
 import users from "../../factories/usersFactory";
 
@@ -21,7 +23,7 @@ describe("Login Test", () => {
 			});
 	
 			cy.url()
-				.should('be.equal', `/finance`)
+				.should('be.equal', `https://projeto13-mywallet-front-six-sigma.vercel.app/finance`)
 		});
 	})
 });

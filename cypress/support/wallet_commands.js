@@ -1,3 +1,5 @@
+/// <reference types="cypress" />
+
 Cypress.Commands.add("register", (userRegister) => {
 	cy.contains('a', 'Não tem uma conta? Cadastre-se').click()
 	cy.get('#name').type(userRegister.name)

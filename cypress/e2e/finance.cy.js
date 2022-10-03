@@ -1,3 +1,5 @@
+/// <reference types="cypress" />
+
 import walletFactory from "../../factories/walletFactory";
 
 const client = walletFactory.clientRegister;
@@ -24,7 +26,6 @@ describe("Finance tests", () => {
 
 	it('Add an entry', async () => {
 		cy.register(userRegister);
-		cy.wait(3000);
 		cy.login(user);
 
 		cy.get('footer > :nth-child(1)').click();
